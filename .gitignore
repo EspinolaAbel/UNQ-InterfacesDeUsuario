@@ -1,2 +1,7 @@
 /*
 !Practica
+.project
+*.class
+.settings
+.classpath
+target/
