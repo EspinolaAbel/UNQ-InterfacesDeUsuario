@@ -20,10 +20,8 @@ class Ej1Window extends MainWindow<Ej1Domain>{
 		
 		new Label(mainPanel).text = "Nombre";
 		
-		var String n
-		var String a
-		
 		new TextBox(mainPanel) => [
+			width = 200
 			value <=> "nombre"
 		]
 		
@@ -31,9 +29,7 @@ class Ej1Window extends MainWindow<Ej1Domain>{
 		
 		new TextBox(mainPanel).value <=> "apellido"
 		
-		var saludo = "Hola "+n+" "+a
-		
-		new Label(mainPanel)
+		new Label(mainPanel).value <=> "saludo"
 	}
 	
 
