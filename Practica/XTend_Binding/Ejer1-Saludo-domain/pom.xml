@@ -3,11 +3,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>ar.edu.unq</groupId>
-  <artifactId>xtend-domain-ej1</artifactId>
+  <artifactId>Ejer1-Saludo-domain</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>domain-ej1</name>
+  <name>Ejer1-Saludo-domain</name>
   <url>http://maven.apache.org</url>
 
   <properties>
