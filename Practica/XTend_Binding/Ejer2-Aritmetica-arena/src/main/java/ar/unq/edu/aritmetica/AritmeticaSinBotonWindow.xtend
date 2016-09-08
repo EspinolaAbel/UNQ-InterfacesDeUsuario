@@ -26,7 +26,9 @@ class AritmeticaSinBotonWindow extends MainWindow<Aritmetica> {
 		
 		new Label(mainPanel).text = "Resultado:"
 		
-		new Label(mainPanel).value <=> "resultado"
+		var unLabel = new Label(mainPanel);
+		
+		unLabel.fireOnPropertyChange("operando1");
 		
 	}
 	

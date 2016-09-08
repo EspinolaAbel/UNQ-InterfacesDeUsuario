@@ -3,6 +3,7 @@ package ar.unq.edu.aritmetica;
 import ar.edu.unq.aritmetica.Aritmetica;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
+import org.uqbar.arena.bindings.NotNullObservable;
 import org.uqbar.arena.bindings.ObservableValue;
 import org.uqbar.arena.widgets.Button;
 import org.uqbar.arena.widgets.Control;
@@ -21,6 +22,8 @@ public class AritmeticaWindow extends MainWindow<Aritmetica> {
   }
   
   public void createContents(final Panel mainPanel) {
+    NotNullObservable operando1 = new NotNullObservable("num1");
+    NotNullObservable operando2 = new NotNullObservable("num2");
     this.setTitle("Sacar la cuenta");
     Label _label = new Label(mainPanel);
     _label.setText("Operando 1:");
@@ -39,16 +42,17 @@ public class AritmeticaWindow extends MainWindow<Aritmetica> {
         final Action _function = new Action() {
           public void execute() {
             Aritmetica _modelObject = AritmeticaWindow.this.getModelObject();
-            _modelObject.multiplicar();
+            _modelObject.getMultiplicar();
           }
         };
         it.onClick(_function);
       }
     };
-    ObjectExtensions.<Button>operator_doubleArrow(_button, _function);
+    Button aButton = ObjectExtensions.<Button>operator_doubleArrow(_button, _function);
+    aButton.<Object, ControlBuilder>bindEnabled(operando1);
+    aButton.<Object, ControlBuilder>bindEnabled(operando2);
     Label _label_2 = new Label(mainPanel);
-    ObservableValue<Control, ControlBuilder> _value_2 = _label_2.<ControlBuilder>value();
-    ArenaXtendExtensions.operator_spaceship(_value_2, "resultado");
+    _label_2.<Object, ControlBuilder>bindValueToProperty("resultado");
   }
   
   public static void main(final String[] args) {
