@@ -7,22 +7,22 @@ import static org.uqbar.commons.model.ObservableUtils.*
 
 @Accessors
 @TransactionalAndObservable
-class Aritmetica {
+class AritmeticaSinBoton {
 	var Integer num1
 	var Integer num2
 
-	new() {
-		this.num1 = 0
-		this.num2 = 0
-	}
-
-
 	def void setNum1(Integer num){
 		this.num1 = num;
+		this.calcularOperacion()
 	}
 	
 	def void setNum2(Integer num){
 		this.num2 = num;
+		this.calcularOperacion()
+	}
+
+	def Boolean getPuedeOperar() {
+		return this.getNum1() != null && this.getNum2() != null	
 	}
 
 	def Integer getResultadoOperacion() {
@@ -30,28 +30,13 @@ class Aritmetica {
 	}
 	
 	def void calcularOperacion() {
-		firePropertyChanged(this, "resultadoOperacion")
+		firePropertyChanged(this, "puedeOperar")
+		if(this.getPuedeOperar())
+			firePropertyChanged(this, "resultadoOperacion")
 	}
 
 	def Integer multiplicar() {
 		return num1 * num2
 	}
-
-
-//	def void sumar() {
-//		resultado = num1 + num2
-//	}
-
-//	def Integer restar() {
-//		resultado = num1 - num2
-//	}
 	
-//	def Integer multiplicar() {
-//		resultado = num1 * num2
-//		num1 * num2
-//	}
-	
-//	def Integer dividir() {
-//		resultado = num1 / num2
-//	}
 }
