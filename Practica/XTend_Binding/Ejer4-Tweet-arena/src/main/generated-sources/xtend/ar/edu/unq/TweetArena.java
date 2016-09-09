@@ -1,8 +1,6 @@
 package ar.edu.unq;
 
 import ar.edu.unq.TweetDomain;
-import java.awt.Color;
-import java.beans.PropertyChangeSupport;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.arena.widgets.Control;
@@ -14,8 +12,6 @@ import org.uqbar.lacar.ui.model.ControlBuilder;
 
 @SuppressWarnings("all")
 public class TweetArena extends MainWindow<TweetDomain> {
-  private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
-  
   public TweetArena() {
     super(new TweetDomain());
   }
@@ -32,9 +28,7 @@ public class TweetArena extends MainWindow<TweetDomain> {
     final Procedure1<Label> _function = new Procedure1<Label>() {
       public void apply(final Label it) {
         it.<Object, ControlBuilder>bindValueToProperty("caracteresRestantes");
-        if ((58 < 10)) {
-          it.setForeground(Color.RED);
-        }
+        it.<ControlBuilder, Object, Object>bindForegroundToProperty("color");
       }
     };
     ObjectExtensions.<Label>operator_doubleArrow(_label_1, _function);
