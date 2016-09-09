@@ -1,32 +1,47 @@
 package ar.edu.unq.domain_ej1
 
 import org.eclipse.xtend.lib.annotations.Accessors
-import org.uqbar.commons.utils.Observable
+//import org.uqbar.commons.utils.Observable
+import org.uqbar.commons.utils.TransactionalAndObservable
+
+import static org.uqbar.commons.model.ObservableUtils.*
 
 @Accessors
-@Observable
+@TransactionalAndObservable
 class Ej1Domain {
-	var String nombre = ""
-	var String apellido = ""
-	var String saludo
+	var String nombre
+	var String apellido
 	
-	def void setApellido(String a) {
-		apellido = a
-		setSaludo()
+	new() {
+		this.nombre = ""
+		this.apellido = ""
 	}
 	
-	def void setNombre(String n) {
-		nombre = n
-		setSaludo()
+	def void setNombre(String nombre) {
+		this.nombre = nombre;
+		this.saludar();
 	}
 	
-	def String setSaludo() {
+	def void setApellido(String apellido) {
+		this.apellido = apellido;
+		this.saludar();
+	}
+	
+
+	def String getSaludo() {
 		if(nombre == "" && apellido == "") {
-			saludo = "--No hay nadie a quien saludar--"
+			return "--No hay nadie a quien saludar--"
 		}
 		else {
-			saludo = "Hola "+this.nombre+" "+this.apellido
+			return "Hola "+this.nombre+" "+this.apellido
 		}
+	}
+	
+	/** Al llamar a este método se dispara el aviso a todos los objetos observadores anotados
+	 * que la propiedad "saludo" a sido actualizada.
+	 */
+	def void saludar() {
+		firePropertyChanged(this, "saludo")
 	}
 	
 }
