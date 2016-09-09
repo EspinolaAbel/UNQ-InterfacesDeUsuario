@@ -1,7 +1,9 @@
 package ar.edu.unq;
 
+import java.awt.Color;
 import org.eclipse.xtend.lib.annotations.Accessors;
 import org.eclipse.xtext.xbase.lib.Pure;
+import org.uqbar.commons.model.ObservableUtils;
 import org.uqbar.commons.utils.Observable;
 
 @Accessors
@@ -10,22 +12,30 @@ import org.uqbar.commons.utils.Observable;
 public class PalabrasDomain {
   private String palabra;
   
-  private String palabraAlReves;
+  private Color color = Color.BLUE;
   
   public void setPalabra(final String palabra) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nType mismatch: cannot convert from void to String");
+    this.palabra = palabra;
+    ObservableUtils.firePropertyChanged(this, "palabraInvertida");
+    this.isPalindromo();
   }
   
-  public void invertirPalabra(final String aWord) {
-    throw new Error("Unresolved compilation problems:"
-      + "\nno viable alternative at input \'=\'"
-      + "\nThe method pal((Object)=>Integer) is undefined"
-      + "\nThe constructor Array() is not visible"
-      + "\nInvalid number of arguments. The field palabraAlReves is not applicable for the arguments ((Object)=>Integer)"
-      + "\nCannot refer to the non-final variable i inside a lambda expression"
-      + "\nCannot refer to the non-final variable i inside a lambda expression"
-      + "\nThis expression is not allowed in this context, since it doesn\'t cause any side effects.");
+  public String getPalabraInvertida() {
+    String _palabra = this.getPalabra();
+    StringBuilder _stringBuilder = new StringBuilder(_palabra);
+    StringBuilder _reverse = _stringBuilder.reverse();
+    return _reverse.toString();
+  }
+  
+  public void isPalindromo() {
+    String _palabra = this.getPalabra();
+    String _palabraInvertida = this.getPalabraInvertida();
+    boolean _equals = _palabra.equals(_palabraInvertida);
+    if (_equals) {
+      this.color = Color.RED;
+    } else {
+      this.color = Color.BLUE;
+    }
   }
   
   @Pure
@@ -34,11 +44,11 @@ public class PalabrasDomain {
   }
   
   @Pure
-  public String getPalabraAlReves() {
-    return this.palabraAlReves;
+  public Color getColor() {
+    return this.color;
   }
   
-  public void setPalabraAlReves(final String palabraAlReves) {
-    this.palabraAlReves = palabraAlReves;
+  public void setColor(final Color color) {
+    this.color = color;
   }
 }

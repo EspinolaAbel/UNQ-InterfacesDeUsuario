@@ -7,7 +7,6 @@ import org.uqbar.arena.widgets.NumericField
 
 import static extension org.uqbar.arena.xtend.ArenaXtendExtensions.*
 import ar.edu.unq.aritmetica.AritmeticaSinBoton
-import org.uqbar.arena.bindings.NotNullObservable
 
 class AritmeticaSinBotonWindow extends MainWindow<AritmeticaSinBoton> {
 	

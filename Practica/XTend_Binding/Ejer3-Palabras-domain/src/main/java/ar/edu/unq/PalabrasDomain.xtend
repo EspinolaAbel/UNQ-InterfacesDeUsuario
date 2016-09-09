@@ -2,29 +2,33 @@ package ar.edu.unq
 
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.utils.Observable
-import java.lang.reflect.Array
+
+import static org.uqbar.commons.model.ObservableUtils.*
+import java.awt.Color
 
 @Accessors
 @Observable
 class PalabrasDomain {
 	
 	var String palabra;
-	var String palabraAlReves;
+	var Color color = Color.BLUE;
 	
 	def void setPalabra(String palabra) {
 		this.palabra = palabra;
-		this.palabraAlReves = invertirPalabra(palabra);
+		firePropertyChanged(this, "palabraInvertida")
+		this.isPalindromo()
 	}
 	
-	def invertirPalabra(String aWord) {
-		var Integer i;
-		var pal = aWord.toCharArray();
-		var lap = new Array(6);
-
-		
-		for(i=0; i<=aWord.length(); i++) {
-			this.palabraAlReves[i] = pal[i];
-		}
+	def getPalabraInvertida() {
+		return new StringBuilder(this.getPalabra()).reverse().toString
 	}
+	
+	def void isPalindromo() {
+		if(this.getPalabra().equals(this.getPalabraInvertida))
+			this.color = Color.RED
+		else
+			this.color = Color.BLUE
+	}
+	
 	
 }
