@@ -1,10 +1,10 @@
 package ar.edu.unq;
 
 import ar.edu.unq.TweetDomain;
+import ar.edu.unq.TweeterTextBox;
 import org.eclipse.xtext.xbase.lib.ObjectExtensions;
 import org.eclipse.xtext.xbase.lib.Procedures.Procedure1;
 import org.uqbar.arena.widgets.Control;
-import org.uqbar.arena.widgets.KeyWordTextArea;
 import org.uqbar.arena.widgets.Label;
 import org.uqbar.arena.widgets.Panel;
 import org.uqbar.arena.windows.MainWindow;
@@ -20,8 +20,8 @@ public class TweetArena extends MainWindow<TweetDomain> {
     this.setTitle("Editor de Tweet");
     Label _label = new Label(mainPanel);
     _label.setText("Tweet");
-    KeyWordTextArea _keyWordTextArea = new KeyWordTextArea(mainPanel);
-    Control _setWidth = _keyWordTextArea.setWidth(200);
+    TweeterTextBox _tweeterTextBox = new TweeterTextBox(mainPanel);
+    Control _setWidth = _tweeterTextBox.setWidth(200);
     Control box = _setWidth.setHeight(100);
     box.<Object, ControlBuilder>bindValueToProperty("tweet");
     Label _label_1 = new Label(mainPanel);

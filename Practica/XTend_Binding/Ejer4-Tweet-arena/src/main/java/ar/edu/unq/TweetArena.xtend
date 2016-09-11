@@ -26,7 +26,7 @@ class TweetArena extends MainWindow<TweetDomain> {
 		
 		new Label(mainPanel).setText("Tweet");
 		
-		var box = new KeyWordTextArea(mainPanel).setWidth(200).setHeight(100);
+		var box = new TweeterTextBox(mainPanel).setWidth(200).setHeight(100);
 		box.bindValueToProperty("tweet");
 				
 		new Label(mainPanel) => [
