@@ -7,24 +7,17 @@ import static org.uqbar.commons.model.ObservableUtils.*
 @Accessors
 @Observable
 class ConversionDomain {
-//	var Double celsius
-//	var Double fahrenheit
+	var Double celsius
+	var Double fahrenheit
 	
 	def void setCelsius(Double temp) {
-//		this.celsius = temp
-		firePropertyChanged(this, "fahrenheit")
+		this.celsius = temp
+		this.fahrenheit = this.celsius * 1.96
 	}
 
 	def void setFahrenheit(Double temp) {
-//		this.fahrenheit = temp
-		firePropertyChanged(this, "celsius")
+		this.fahrenheit = temp
+		this.celsius = this.fahrenheit / 1.96
 	}
 	
-	def Double getFahrenheit() {
-		this.celsius * 1.96
-	}
-	
-	def Double getCelsius() {
-		this.fahrenheit / 1.96
-	}
 }
