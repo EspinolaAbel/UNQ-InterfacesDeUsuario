@@ -11,6 +11,5 @@ class CalificacionMini {
 	String evaluador
 	Integer id
 	String tipo
-	double ratingPromedio
 
 }

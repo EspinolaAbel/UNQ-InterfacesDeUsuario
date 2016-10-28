@@ -10,7 +10,7 @@ import ar.edu.unq.uis.rankit.web.requestsAndResponses.CreateCalificacionRequest
 import ar.edu.unq.uis.rankit.web.requestsAndResponses.EditCalificacionRequest
 import ar.edu.unq.uis.rankit.web.requestsAndResponses.LogInRequest
 import ar.edu.unq.uis.rankit.web.requestsAndResponses.LogInResponse
-import ar.edu.unq.uis.rankit.web.requestsAndResponses.SignInRequest
+import ar.edu.unq.uis.rankit.web.requestsAndResponses.SignUpRequest
 import org.uqbar.xtrest.api.annotation.Body
 import org.uqbar.xtrest.api.annotation.Controller
 import org.uqbar.xtrest.api.annotation.Delete
@@ -30,57 +30,54 @@ class ControllerManager {
 		this.dataManager = new WebDataManager()
 	}
 
-	// /////////////////////////////////////////////////////////////////////
-	// ///////////////// USUARIOS /////////////////////////////////////////
-	// ///////////////////////////////////////////////////////////////////
-	
-	// ingresar
+
+//	SERVICIOS USUARIOS:
+//	------------------
+
 	@Post("/usuarios")
-	def signIn(@Body String body) {
+	def logIn(@Body String body) {
 		response.contentType = "application/json"
 		try {
 			var LogInRequest req = body.fromJson(typeof(LogInRequest))
-			var user = this.dataManager.loguearUsuario(req)
-			var LogInResponse res = new LogInResponse(user.id)
+			var LogInResponse res = this.dataManager.loguearUsuario(req)
 			ok(res.toJson)
 		} catch (UsuarioNoEncontradoException e) {
-			notFound(e.message)
+			notFound("{ error: \""+e.message+"\" }")
 		} catch (ContraseniaDeUsuarioIncorrectaException e) {
-			badRequest(e.message)
+			badRequest("{ error: \""+e.message+"\" }")
 		}
 	}
 
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
-	// registrarse 
 	@Put("/usuarios")
 	def signUp(@Body String body) {
 		response.contentType = "application/json"
 		try {
-			var SignInRequest req =  body.fromJson(typeof(SignInRequest))
+			var SignUpRequest req =  body.fromJson(typeof(SignUpRequest))
 			this.dataManager.registrarUsuario(req)
 			ok()
 		} catch (NombreDeUsuarioInvalidoException e) {
-			badRequest(e.message)
+			badRequest("{ error: \""+e.message+"\" }")
+		} catch (ContraseniaDeUsuarioIncorrectaException e) {
+			badRequest("{ error: \""+e.message+"\" }")
 		}
 	}
 
-	// /////////////////////////////////////////////////////////////////////
-	// ///////////////// EVALUADOS ////////////////////////////////////////
-	// ///////////////////////////////////////////////////////////////////
-	
+
+//	SERVICIOS EVALUADOS:
+//	-------------------
+
 	@Get("/evaluados")
 	def getEvaluados() {
 		response.contentType = "application/json"
 		var evaluados = this.dataManager.getEvaluados()
 		ok(evaluados.toJson)
 	}
-
-	// /////////////////////////////////////////////////////////////////////
-	// ///////////////// RANKING //////////////////////////////////////////
-	// ///////////////////////////////////////////////////////////////////
 	
-	// devuelve los lugares y servicios con nombre, de tipo, con igual o mayor cantidad de calificaciones y ranking
+
+//	SERVICIOS RANKING:
+//	-----------------
+	
 	@Get("/ranking")
 	def getRanking(String nombre, String tipo, String calificaciones, String ranking) {
 		response.contentType = "application/json"
@@ -88,43 +85,19 @@ class ControllerManager {
 		ok(rankingFiltrado.toJson)
 	}
 
-	// /////////////////////////////////////////////////////////////////////
-	// ///////////////// CALIFICACIONES ///////////////////////////////////
-	// ///////////////////////////////////////////////////////////////////
-	
-	// Tiene que ser por ID
-	@Get("/calificaciones")
-	def getCalificacionesDelUsuario(String id) {
-		response.contentType = "application/json"
-		var calificacionesDelUsuario = this.dataManager.getCalificacionesDelUsuarioConId(Integer.valueOf(id))
-		ok(calificacionesDelUsuario.toJson)
-	}
 
-
-	@Delete("/calificaciones")
-	def deleteCalificacionById(String id) {
-		response.contentType = "application/json"
-		try {
-			this.dataManager.deleteCalificacion(Integer.valueOf(id))
-			ok()
-		} catch (NumberFormatException e) {
-			badRequest("El id \""+id+"\" no es un identificador válido para una calificación.")
-		} catch (IdDeCalificacionInexistenteException e) {
-			notFound(e.message)
-		}
-	}
+//	SERVICIOS CALIFICACIONES:
+//	------------------------
 
 	@Post("/calificaciones")
 	def createCalificacion(@Body String body) {
 		response.contentType = "application/json"
 		try {
 			var CreateCalificacionRequest req = body.fromJson(typeof(CreateCalificacionRequest))
-			var idCalificacion = this.dataManager.createCalificacion(req)
-			var CreateCalificacionResponse res = new CreateCalificacionResponse
-			res.idCalificacion = idCalificacion
+			var CreateCalificacionResponse res = this.dataManager.createCalificacion(req)
 			ok(res.toJson)
 		} catch (CalificacionCompletadaIncorrectamenteException e) {
-			badRequest(e.message)
+			badRequest("{ error: \""+e.message+"\" }")
 		}
 	}
 
@@ -136,11 +109,35 @@ class ControllerManager {
 			this.dataManager.editCalificacion(req)
 			ok()
 		} catch (CalificacionCompletadaIncorrectamenteException e) {
-			badRequest(e.message)
+			badRequest("{ error: \""+e.message+"\" }")
 		} catch (IdDeCalificacionInexistenteException e) {
-			notFound(e.message)
+			notFound("{ error: \""+e.message+"\" }")
 		}
 	}
 
+	@Delete("/calificaciones")
+	def deleteCalificacionById(String id) {
+		response.contentType = "application/json"
+		try {
+			this.dataManager.deleteCalificacion(Integer.valueOf(id))
+			ok()
+		} catch (NumberFormatException e) {
+			badRequest("{ error: \"El id \""+id+"\" no es un identificador válido para una calificación\". }")
+		} catch (IdDeCalificacionInexistenteException e) {
+			notFound("{ error: \""+e.message+"\" }")
+		}
+	}
+	
+	@Get("/calificaciones")
+	def getCalificacionesDelUsuario(String id) {
+		response.contentType = "application/json"
+		var calificacionesDelUsuario = this.dataManager.getCalificacionesDelUsuarioConId(Integer.valueOf(id))
+		ok(calificacionesDelUsuario.toJson)
+	}
+//	
+//	def static void main(String[] a) {
+//		var String json = "{ id_calificacion: \"1\", detalle:\"deetalle\", puntaje: \"10\" }"
+//		var a = json.fromJson(typeof(EditCalificacionRequest))
+//	}
 }
 

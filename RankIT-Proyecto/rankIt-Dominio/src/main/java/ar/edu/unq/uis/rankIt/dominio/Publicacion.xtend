@@ -5,7 +5,6 @@ import java.util.ArrayList
 import org.joda.time.DateTime
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.uqbar.commons.utils.Observable
-import com.fasterxml.jackson.databind.annotation.JsonSerialize
 
 @Accessors
 @Observable
@@ -57,13 +56,15 @@ class Publicacion {
 	}
 
 	def int cantidadDeEvaluaciones() {
-		calificaciones.size
+		calificaciones.size()
 	}
 
 	def double ratingPromedio() {
 		if(cantidadDeEvaluaciones>0){
-			var suma = calificaciones.fold(0, [acum, calificacion|acum + calificacion.puntaje])
-			return suma / cantidadDeEvaluaciones
+			var suma = 0
+			for(Calificacion c : this.calificaciones)
+				suma += c.puntaje
+			return suma/cantidadDeEvaluaciones
 		}
 		else return 0
 	}

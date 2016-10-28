@@ -3,16 +3,17 @@ package ar.edu.unq.uis.rankit.web.requestsAndResponses
 import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
-class CreateCalificacionRequest {
-//TODO: Comentado solo para hacerlo andar. Hay reveer los parametros del request.
-//	Integer idUsuario
-//	Integer idEvaluado
-//	String nombreEvaluado
-//	String detalle
-//	Integer puntaje
+class CreateCalificacionRequest implements Request {
 
-	String evaluado
+	Integer id_evaluador
+	Integer id_evaluado
+	String tipo_evaluado
 	Integer puntaje
 	String detalle
-	String evaluador
+	
+	override isValid() {
+		return 	id_evaluador != null && id_evaluado != null && tipo_evaluado != "" &&
+				puntaje != null && detalle != "";
+	}
+
 }

@@ -3,8 +3,7 @@ package ar.edu.unq.uis.rankit.web.data
 import ar.edu.unq.uis.rankit.web.requestsAndResponses.LogInRequest
 import ar.edu.unq.uis.rankIt.dominio.AdministradorGeneral
 import org.uqbar.commons.utils.ApplicationContext
-import ar.edu.unq.uis.rankIt.dominio.Usuario
-import ar.edu.unq.uis.rankit.web.requestsAndResponses.SignInRequest
+import ar.edu.unq.uis.rankit.web.requestsAndResponses.SignUpRequest
 import ar.edu.unq.uis.rankit.web.login.LogIn
 import ar.edu.unq.uis.rankit.web.signup.SignUp
 import ar.edu.unq.uis.rankIt.web.minModelObject.PublicacionMini
@@ -17,6 +16,8 @@ import ar.edu.unq.uis.rankIt.web.minModelObject.CalificacionMini
 import ar.edu.unq.uis.rankit.web.requestsAndResponses.CreateCalificacionRequest
 import ar.edu.unq.uis.rankit.web.requestsAndResponses.EditCalificacionRequest
 import ar.edu.unq.uis.rankIt.exceptions.CalificacionCompletadaIncorrectamenteException
+import ar.edu.unq.uis.rankit.web.requestsAndResponses.LogInResponse
+import ar.edu.unq.uis.rankit.web.requestsAndResponses.CreateCalificacionResponse
 
 class WebDataManager {
 	
@@ -30,31 +31,31 @@ class WebDataManager {
 		this.signer = new SignUp(adminGral.adminUsuarios)
 	}
 	
-	/** @author ae */
-	def Usuario loguearUsuario(LogInRequest request) {
+
+	def LogInResponse loguearUsuario(LogInRequest request) {
 		var user = this.logger.validarUsuario(request.usuario, request.password)
-		return user
+		return new LogInResponse(user.id)
 	}
 	
-	/** @author ae */
-	def void registrarUsuario(SignInRequest request) {
+
+	def void registrarUsuario(SignUpRequest request) {
 		this.signer.registrarUsuario(request.usuario, request.password)
 	}
 	
 	
-	/** @author ae */
+
 	def getEvaluados() {
 		var List<PublicacionMini> miniPublicaciones = new ArrayList<PublicacionMini>
-		for(Publicacion each: this.publicaciones())
+		for(Publicacion each: this.publicacionesHabilitadas())
 			miniPublicaciones.add = this.toPublicacionMini(each)
 		return miniPublicaciones
 	}
 	
 	
-	//TODO: no valido si las publicaciones estan habilitadas
-	/** @author ae */
+	/** Se responde con la lista del ranking de publicaciones habilitadas ordenadas según su ranking. */
 	def getRankingDePublicaciones() {
-		var List<Publicacion> publicacionesOrdenadas = this.ordenarPorPromedioDeCalificaciones(this.publicaciones())
+		var List<Publicacion> publicacionesOrdenadas = 
+			this.ordenarPublicacionesPorPromedioDeCalificaciones(this.publicacionesHabilitadas())
 		val List<RankingMini> ranking = new ArrayList<RankingMini>
 
 		for (Publicacion each : publicacionesOrdenadas) {
@@ -66,8 +67,7 @@ class WebDataManager {
 	}
 	
 	
-	/** Se responde con la lista de {@link RankingMini} ordenada filtrada por los parámetros dados.
-	 * @author ae */
+	/** Se responde con la lista de {@link RankingMini} ordenada filtrada por los parámetros dados. */
 	def getRankingFilteredBy(String nombre, String tipo, String calificaciones, String ranking) {
 		var filteredRankingList = new ArrayList<RankingMini>()
 		
@@ -77,7 +77,7 @@ class WebDataManager {
 		var Integer rank = filter.toInt(ranking)
 		var boolean superaLosFiltros		
 
-		for(RankingMini each : this.rankingDePublicaciones) {
+		for(RankingMini each : this.getRankingDePublicaciones()) {
 			evaluado = each.evaluado
 
 			superaLosFiltros = 	filter.match(evaluado.nombre, nombre)				&&
@@ -91,9 +91,9 @@ class WebDataManager {
 	}
 	
 	
-	/** @author ae */
+
 	def getCalificacionesDelUsuarioConId(Integer idUsuario) {
-		var calificacionesDelUsuario = this.adminGral.adminCalificaciones.getCalificacionesDeUsuario(idUsuario)
+		var calificacionesDelUsuario = this.adminGral.adminCalificaciones.getCalificacionesDeUsuarioConId(idUsuario)
 		var calificacionesMini = new ArrayList<CalificacionMini>()
 		for(Calificacion each: calificacionesDelUsuario)
 			calificacionesMini.add(this.toCalificacionMini(each))
@@ -101,46 +101,45 @@ class WebDataManager {
 	}
 
 
-	def createCalificacion(CreateCalificacionRequest request) {
-		//TODO: var evaluador = this.adminGeneral.adminUsuarios.buscarUsuarioPorId(request.idUsuario)
-		var evaluador = this.adminGeneral.adminUsuarios.buscarUsuarioPorNombre(request.evaluador)
-		
-		if(request.detalle != "" && request.puntaje != null) {
-			var evaluado = this.adminGeneral.adminServicios.buscarPublicacionPorNombre(request.evaluado)
-			if(evaluado==null)
-				evaluado= this.adminGeneral.adminLugares.buscarPublicacionPorNombre(request.evaluado)
-			//TODO: esta validacion estaria bueno hacerla en otro lado
-			if(evaluado != null && evaluador != null) {
-				var nuevaCalificacion = new Calificacion(evaluado, evaluador, request.puntaje, request.detalle)
-				this.adminGral.adminCalificaciones.agregarCalificacion(nuevaCalificacion)
-				return nuevaCalificacion.id
-			}
+	def CreateCalificacionResponse createCalificacion(CreateCalificacionRequest request) {		
+		if(request.isValid()) {
+			var evaluador = this.adminGeneral.adminUsuarios.buscarUsuarioPorId(request.id_evaluador)
+			var evaluado = 	this.publicacionesHabilitadas().findFirst[ each |
+								each.id == request.id_evaluado	&&
+								each.tipo.equals(request.tipo_evaluado)
+							]
+			var nuevaCalificacion = new Calificacion(evaluado, evaluador, request.puntaje, request.detalle)
+			this.adminGral.adminCalificaciones.agregarCalificacion(nuevaCalificacion)
+			return new CreateCalificacionResponse(nuevaCalificacion.id)
 		}
-		throw new CalificacionCompletadaIncorrectamenteException()
+		else
+			throw new CalificacionCompletadaIncorrectamenteException()
 	}
 	
 	
-	/** @author ae */
+
 	def deleteCalificacion(Integer idCalificacion) {
 		this.adminGral.adminCalificaciones.eliminarCalificacionPorID(idCalificacion)
 	}
 
-	//TODO: no esta validando nada cuando se ingresan parametros erroneos.
-	/** @author ae */
+
 	def editCalificacion(EditCalificacionRequest request) {
-		var calificacionEncontrada = this.adminGeneral.adminCalificaciones.getCalificacionConId(request.id)
-		calificacionEncontrada => [
-			it.detalle = request.detalle
-			it.puntaje = request.puntaje
-		]
+		if(request.isValid()) {
+			var calificacionEncontrada = this.adminGeneral.adminCalificaciones.getCalificacionConId(request.id_calificacion)
+				calificacionEncontrada => [
+					it.detalle = request.detalle
+					it.puntaje = request.puntaje
+				]
+		}
+		else
+			throw new CalificacionCompletadaIncorrectamenteException
 	}
 
-	/** @return todas las publicaciones de la aplicación.
-	 * @author ae */
-	def publicaciones() {
+	/** @return todas las publicaciones que están habilitadas en la aplicación. */
+	def publicacionesHabilitadas() {
 		val List<Publicacion> publicaciones = new ArrayList<Publicacion>
-		publicaciones.addAll = adminGral.adminServicios.publicaciones
-		publicaciones.addAll = adminGral.adminLugares.publicaciones
+		publicaciones.addAll = adminGral.adminServicios.publicacionesHabilitadas
+		publicaciones.addAll = adminGral.adminLugares.publicacionesHabilitadas
 		return publicaciones
 	}
 
@@ -148,17 +147,15 @@ class WebDataManager {
 	 * calificaciones.
 	 * La lista estará ordenada de mayor a menor promedio, estando en las primeras ubicaciones aquellas
 	 * publicaciones de mayor promedio.
-	 * @return todas las publicaciones de la aplicación ordenadas por promedio de calificaciones.
-	 * @author ae */
-	def ordenarPorPromedioDeCalificaciones(List<Publicacion> publicaciones) {
+	 * @return todas las publicaciones de la aplicación ordenadas por promedio de calificaciones. */
+	def ordenarPublicacionesPorPromedioDeCalificaciones(List<Publicacion> publicaciones) {
 		return publicaciones.sortBy[each|each.ratingPromedio].reverse
 	}
 
 //TO MINIS:
 
 	/** Dada una {@link PublicacionMini}, su posición en el ranking y su cantidad de calificaciones,
-	 *  se retorna un {@link RankingMini} de la publicacion.
-	 * @author ae */
+	 *  se retorna un {@link RankingMini} de la publicacion. */
 	def toRankingMini(PublicacionMini miniPublicacion, Integer ranking, Integer cantEvaluaciones) {
 		var mini = new RankingMini()
 		mini.evaluado = miniPublicacion
@@ -168,8 +165,7 @@ class WebDataManager {
 	}
 	
 		
-	/** Dada una {@link Publicacion} se retorna una {@link PublicacionMini} de la misma.
-	 * @author ae */
+	/** Dada una {@link Publicacion} se retorna una {@link PublicacionMini} de la misma. */
 	def toPublicacionMini(Publicacion publicacion) {
 		var mini = new PublicacionMini
 		mini.id = publicacion.id
@@ -179,10 +175,8 @@ class WebDataManager {
 	}
 	
 	
-	/** Dada una {@link Calificacion} se retorna una {@link CalificacionMini} de la misma.
-	 * @author ae */
+	/** Dada una {@link Calificacion} se retorna una {@link CalificacionMini} de la misma. */
 	def toCalificacionMini(Calificacion calificacion) {
-		//TODO: hay cosas repetidas acá que habría que sacar
 		var mini = new CalificacionMini()
 		mini.detalle = calificacion.detalle
 		mini.puntaje = calificacion.puntaje
@@ -190,7 +184,6 @@ class WebDataManager {
 		mini.evaluador = calificacion.evaluador.nombre
 		mini.id = calificacion.id
 		mini.tipo = calificacion.evaluado.tipo
-		mini.ratingPromedio = calificacion.evaluado.ratingPromedio
 		return mini
 	}	
 	

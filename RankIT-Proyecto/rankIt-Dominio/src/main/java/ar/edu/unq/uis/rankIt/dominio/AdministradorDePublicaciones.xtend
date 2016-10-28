@@ -18,8 +18,7 @@ class AdministradorDePublicaciones {
 	/** Se agrega una nueva publicación a la lista de publicaciones de este administrador.
 	 * Es responsabilidad de este administrador generar un nuevo id único para la publicación dada.
 	 * Dado que este administrador administra un tipo específico de publicaciones, también es responsabilidad de este administrador setearle
-	 * el tipo de publicación a todas las publicaciones agregadas a la lista.
-	 * @author ae */
+	 * el tipo de publicación a todas las publicaciones agregadas a la lista. */
 	def agregar(Publicacion p){
 		p.id = generarNuevoId
 		p.tipo = this.tipo
@@ -31,7 +30,7 @@ class AdministradorDePublicaciones {
 	}
 	
 	def habilitados() {
-		publicaciones.filter[it.estaHabilitado].size
+		return this.publicacionesHabilitadas.size
 	}
 
 	def deshabilitados() {
@@ -43,8 +42,7 @@ class AdministradorDePublicaciones {
 	}
 	
 	/** Este método genera un nuevo id para una nueva publicación.
-	 * Este método solo debe ser llamado cuando se crea una nueva publicación.
-	 * @author ae */
+	 * Este método solo debe ser llamado cuando se crea una nueva publicación. */
 	private def int generarNuevoId() {
 		this.registroId++
 		return this.registroId
@@ -57,6 +55,10 @@ class AdministradorDePublicaciones {
 			
 		} 
 		return null
+	}
+	
+	def List<Publicacion> publicacionesHabilitadas() {
+		return publicaciones.filter[it.estaHabilitado].toList
 	}
 	
 }

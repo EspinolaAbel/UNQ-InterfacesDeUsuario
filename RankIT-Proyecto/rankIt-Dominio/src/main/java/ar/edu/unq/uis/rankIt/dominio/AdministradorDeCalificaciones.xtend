@@ -128,7 +128,7 @@ class AdministradorDeCalificaciones {
 		return ret
 	}
 	
-	def List<Calificacion> getCalificacionesDeUsuario(Integer id) {
+	def List<Calificacion> getCalificacionesDeUsuarioConId(Integer id) {
 		var List<Calificacion> ret = new ArrayList<Calificacion>
 		ret = this.calificaciones.filter[c|c.evaluador.id.equals(id)].toList
 		return ret

@@ -1,0 +1,3 @@
+requests fromJson:
+	Chequear que el método fromJson del ControllerManager me convierta los parámetros del json al request automaticamente
+	Hecho: fromJson castea automaticamente los tipos del json al tipo de la clasemini que se le esta pasando.

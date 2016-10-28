@@ -4,5 +4,10 @@ import org.eclipse.xtend.lib.annotations.Accessors
 
 @Accessors
 class CreateCalificacionResponse {
-	Integer idCalificacion
+	Integer id_calificacion
+	
+	new(Integer idCalificacion) {
+		this.id_calificacion = idCalificacion
+	}
+	
 }

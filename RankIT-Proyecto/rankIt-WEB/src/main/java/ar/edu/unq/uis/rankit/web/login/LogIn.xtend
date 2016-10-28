@@ -19,8 +19,7 @@ class LogIn {
 	 * a dicho usuario.
 	 * @return el usuario con nombre de usuario y password dados.
 	 * @throws {@link UsuarioNoEncontradoException} en caso de no existir el usuario con el nombre dado.
-	 * @throws {@link ContraseniaDeUsuarioIncorrectaException} en caso que la contraseña dada sea incorrecta.
-	 * @author ae */
+	 * @throws {@link ContraseniaDeUsuarioIncorrectaException} en caso que la contraseña dada sea incorrecta. */
 	def validarUsuario(String nombreBuscado, String contrasenia) {
 		var adminUsuarios = this.administradorDeUsuarios
 		var Usuario usuarioEncontrado = adminUsuarios.buscarUsuarioPorNombre(nombreBuscado)
