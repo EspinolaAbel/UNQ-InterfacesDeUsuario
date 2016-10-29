@@ -7,4 +7,5 @@ class PublicacionMini {
 	Integer id
 	String tipo
 	String nombre
+	Double promedio
 }

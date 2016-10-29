@@ -171,6 +171,7 @@ class WebDataManager {
 		mini.id = publicacion.id
 		mini.tipo = publicacion.tipo
 		mini.nombre = publicacion.nombre
+		mini.promedio = publicacion.ratingPromedio
 		return mini
 	}
 	

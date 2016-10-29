@@ -1,25 +1,31 @@
-app.controller("BusquedaCtrl", function(){
+
+app.controller("BusquedaCtrl", function(RankingSvc, $scope){
+	'use strict';
     var self = this;
     
-    this.nombre;
-    this.tipo;
-    this.calificaciones;
-    this.ranking;
+    this.nombre = "";
+    this.tipo = "";
+    this.calificaciones = "";
+    this.ranking = "";
    
-    this.ranking = [];/*
+    $scope.lsRanking = [];
     this.getRanking = function() {
-        RankingSvc.query(self.query);
-    }*/
-    
-    this.query = function() {
-        return "{nombre:\""+this.nombre+"\", tipo:\""+this.tipo+"\", calificaciones:\""+this.calificaciones+"\", ranking:\""+this.ranking+"}";
+		console.log(self.rankingQuery());
+		$scope.lsRanking = RankingSvc.query(self.rankingQuery());
+		console.log($scope.lsRanking);
     }
     
-    alert(this.query);
+    //var query = function() { - me muestra la función como si fuera un string.
+    this.rankingQuery = function() {
+        var json = "{nombre: \""+this.nombre+"\", tipo: \""+this.tipo+"\", calificaciones: \""+this.calificaciones+"\", ranking: \""+this.ranking+"\"}";
+    	return  json;
+	}
 });
-/*
+
+
 app.factory("RankingSvc", function($resource){
-    return $resource('/ranking', {'id': '@id'}, {
-    	'query': { method: 'GET', isArray: true}
-    });
-});*/
+    return $resource("http://localhost:9000/ranking/:nombre/:tipo/:calificaciones/:ranking",
+                    { 'nombre': '@nombre', 'tipo': '@tipo', 'calificaciones': '@calificaciones', 'ranking': '@ranking' },
+					{'query': { method: 'GET', isArray: true} }
+			);
+});
