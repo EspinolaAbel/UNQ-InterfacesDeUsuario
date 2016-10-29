@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="RankITApp">
+<html>
 <head>
     <meta charset="utf-8" />
     <TITLE>RankIT - Etapa de desarrollo</TITLE>
@@ -28,42 +28,55 @@
     <!-- UNDERSCORE -->
     <script src="node_modules/underscore/underscore-min.js"></script>
 
-    <script src="js/rankITApp.js"></script>
+    <style type="text/css">
+        form label {
+            margin: 0px;
+        }
+        #input-login-button {
+            align-self: center;
+            padding: 0px;
+            text-align: center;
+        }
+        .input-search {
+            width: 250px;
+        }
+        .puntaje {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            color: black;
+            line-height: 50px;
+            text-align: center;
+            background: gray;
+        }
+    </style>
     
+    <script src="js/rankITApp.js"></script>
+    <script src="js/busquedaController.js"></script>  
 </head>
-<body>
+<body ng-app="RankITApp">
+    <span>{{nombre}}</span>
     <div class="container-fluid" id="page-header">
-    <div class="row page-header">
-        <div class="col-md-2" id="logo-rank-it"></div>
-        <h1 class="col-md-5" id="header">Rank-IT</h1>
-        <div class="col-md-5 " id="login-singin" style="border: 1px solid black">
-            <div class="row">
-                <div class="col-md-8">
-                <label for="input-usuario">Usuario:</label>
-                <input type="text" id="input-usuario"/>
-                </div>
-                <div class="col-md-4">
-                <button>Login</button>
-                </div>
-            </div>
-            <div class="row" style="margin: auto">
-                <div class="col-md-8">
-                <label for="input-password">Contraseña:</label>
-                <input type="text" id="input-password" />
-                </div>
-                <div class="col-md-4">
+    <div class="row page-header" style="display:flex; margin: 0px 0px 15px 0px;">
+        <img class="col-md-2" id="logo-rank-it" style="background-color: gray"/>
+        <h1 class="col-md-7" id="header" style="align-self: center">Rank-IT</h1>
+        <div class="col-md-3 row" style="display:flex; border: 1px solid black; padding: 0px">
+            <form class="col-md-8" id="login-signin" style="padding: 15px" >
+                <label for="input-usuario">Usuario:</label><br/>
+                <input type="text" id="input-usuario" ng-model="nombre"/><br/>
+                <label for="input-password">Contraseña:</label><br/>
+                <input type="password" id="input-password" />
+            </form>
+            <div class="col-md-4" id="input-login-button" >
+                <button style="width: 100%; height: 40px">Login</button><br/>
                 <a><small>REGISTRATE!</small></a>
-                </div>
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3" style="background-color: gray">
-            col-md-3 col-md-offset-9
-        </div>
-        <div class="col-md-6 col-md-offset-3" style="background-color: gray">
-            col-md-3 col-md-offset-9
-        </div>
     </div>
+    
+    <div ng-view>
+    
     </div>
 </body>

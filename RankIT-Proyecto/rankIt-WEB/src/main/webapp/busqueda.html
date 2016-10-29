@@ -1,0 +1,42 @@
+<div>
+<div class="container" id="search-panel" data-ng-controller="BusquedaCtrl as busqueda">
+    <div class="row" style="border: 1px solid black; padding: 20px; padding-bottom:30px">
+        <div class="" style="display: flex">
+            <form class="col-md-12">
+                <div class="col-md-4">
+                    <label class="input-search" for="nombre">Nombre</label><br/>
+                    <input class="input-search" ng-model="busqueda.nombre" name="nombre" type="text"/><br/>
+                    <label class="input-search" for="calificaciones">Calificaciones</label><br/>
+                    <input class="input-search" ng-model="busqueda.calificaciones" name="calificaciones" type="text"/>
+                </div>
+                <div class="col-md-4">
+                    <label class="input-search" for="tipo">Tipo</label><br/>
+                    <select class="input-search" ng-model="busqueda.tipo">
+                        <option value="todo">Todo</option>
+                        <option value="lugar">Lugar</option>
+                        <option value="servicio">Servicio</option>
+                    </select><br/>
+                    <label class="input-search" for="ranking">Ranking</label><br/>
+                    <input class="input-search" ng-model="busqueda.ranking" name="ranking" type="text"/>
+                </div>
+                <div class="col-md-4">
+                    <button style="width: 200px; height: 100px;" ng-click="busqueda.getRanking()">BUSCAR</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+    
+<div class="container" id="search-results">
+    <div class="row">
+        <div class="caja col-md-6" style="padding: 5px; margin: 15px; border: 1px solid black; display: flex;">
+            <div style="padding: 5px 15px 5px 5px">
+                <div style="font-size: 30px">Publicacion</div>
+                <div style="font-size: 10px">Servicio o lugar</div>
+            </div>
+            <div class="puntaje">3</div>
+            <div style="font-size: 8px; align-self: flex-end; position: absolute; right: 10%">OPINIONES</div>
+        </div>
+    </div>
+</div>
+</div>
