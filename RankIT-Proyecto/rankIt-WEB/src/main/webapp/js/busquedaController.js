@@ -1,31 +1,21 @@
 
 app.controller("BusquedaCtrl", function(RankingSvc, $scope){
-	'use strict';
-    var self = this;
+	'use strict'; //Al parecer este string es más que un string. Trae algunos features de un framework. Una caracteristica de este string este que mejora los mensajes de error para que sean más descriptivos.
+    var thiz = this;
     
-    this.nombre = "";
-    this.tipo = "";
-    this.calificaciones = "";
-    this.ranking = "";
+	var rankingQuery = new Object();
+    rankingQuery.nombre = "";
+    rankingQuery.tipo = "";
+    rankingQuery.calificaciones = "";
+    rankingQuery.ranking = "";
    
-    $scope.lsRanking = [];
+    this.lsRanking = [];
     this.getRanking = function() {
-		console.log(self.rankingQuery());
-		$scope.lsRanking = RankingSvc.query(self.rankingQuery());
-		console.log($scope.lsRanking);
+		console.log(thiz.rankingQuery);
+		RankingSvc.query(thiz.rankingQuery, function(data){
+			thiz.lsRanking = data;
+		});
     }
     
-    //var query = function() { - me muestra la función como si fuera un string.
-    this.rankingQuery = function() {
-        var json = "{nombre: \""+this.nombre+"\", tipo: \""+this.tipo+"\", calificaciones: \""+this.calificaciones+"\", ranking: \""+this.ranking+"\"}";
-    	return  json;
-	}
-});
-
-
-app.factory("RankingSvc", function($resource){
-    return $resource("http://localhost:9000/ranking/:nombre/:tipo/:calificaciones/:ranking",
-                    { 'nombre': '@nombre', 'tipo': '@tipo', 'calificaciones': '@calificaciones', 'ranking': '@ranking' },
-					{'query': { method: 'GET', isArray: true} }
-			);
+    this.getRanking();
 });
