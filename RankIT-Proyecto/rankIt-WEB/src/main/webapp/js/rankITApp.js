@@ -1,4 +1,4 @@
-var app = angular.module("RankITApp", ["ngRoute","ngResource"]);
+var app = angular.module("RankITApp", ['ngAnimate',"ngRoute","ngResource"]);
 
 app.config(function($routeProvider){
     $routeProvider

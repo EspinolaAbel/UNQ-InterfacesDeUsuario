@@ -42,9 +42,9 @@ class ControllerManager {
 			var LogInResponse res = this.dataManager.loguearUsuario(req)
 			ok(res.toJson)
 		} catch (UsuarioNoEncontradoException e) {
-			notFound("{ error: \""+e.message+"\" }")
+			notFound("{ \"error\": \""+e.message+"\" }")
 		} catch (ContraseniaDeUsuarioIncorrectaException e) {
-			badRequest("{ error: \""+e.message+"\" }")
+			badRequest("{ \"error\": \""+e.message+"\" }")
 		}
 	}
 
@@ -57,9 +57,9 @@ class ControllerManager {
 			this.dataManager.registrarUsuario(req)
 			ok()
 		} catch (NombreDeUsuarioInvalidoException e) {
-			badRequest("{ error: \""+e.message+"\" }")
+			badRequest("{ \"error\": \""+e.message+"\" }")
 		} catch (ContraseniaDeUsuarioIncorrectaException e) {
-			badRequest("{ error: \""+e.message+"\" }")
+			badRequest("{ \"error\": \""+e.message+"\" }")
 		}
 	}
 
@@ -97,7 +97,7 @@ class ControllerManager {
 			var CreateCalificacionResponse res = this.dataManager.createCalificacion(req)
 			ok(res.toJson)
 		} catch (CalificacionCompletadaIncorrectamenteException e) {
-			badRequest("{ error: \""+e.message+"\" }")
+			badRequest("{ \"error\": \""+e.message+"\" }")
 		}
 	}
 
@@ -109,9 +109,9 @@ class ControllerManager {
 			this.dataManager.editCalificacion(req)
 			ok()
 		} catch (CalificacionCompletadaIncorrectamenteException e) {
-			badRequest("{ error: \""+e.message+"\" }")
+			badRequest("{ \"error\": \""+e.message+"\" }")
 		} catch (IdDeCalificacionInexistenteException e) {
-			notFound("{ error: \""+e.message+"\" }")
+			notFound("{ \"error\": \""+e.message+"\" }")
 		}
 	}
 
@@ -122,9 +122,9 @@ class ControllerManager {
 			this.dataManager.deleteCalificacion(Integer.valueOf(id))
 			ok()
 		} catch (NumberFormatException e) {
-			badRequest("{ error: \"El id \""+id+"\" no es un identificador válido para una calificación\". }")
+			badRequest("{ \"error\": \"El id \""+id+"\" no es un identificador válido para una calificación\". }")
 		} catch (IdDeCalificacionInexistenteException e) {
-			notFound("{ error: \""+e.message+"\" }")
+			notFound("{ \"error\": \""+e.message+"\" }")
 		}
 	}
 	
