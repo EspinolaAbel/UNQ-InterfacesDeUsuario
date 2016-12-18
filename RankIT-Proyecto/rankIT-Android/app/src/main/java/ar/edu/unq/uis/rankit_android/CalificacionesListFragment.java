@@ -1,0 +1,146 @@
+package ar.edu.unq.uis.rankit_android;
+
+import android.os.Bundle;
+import android.support.v4.app.ListFragment;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
+
+import ar.edu.unq.uis.rankit_android.model.Calificacion;
+import ar.edu.unq.uis.rankit_android.model.clasesMinificadas.CalificacionMinificada;
+import ar.edu.unq.uis.rankit_android.model.myApy.MyApiEndpointInterface;
+import ar.edu.unq.uis.rankit_android.model.myService.ServiceGenerator;
+import ar.edu.unq.uis.rankit_android.repo.DataService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+/**
+ * Created by aee on 11/11/16.
+ */
+public class CalificacionesListFragment extends ListFragment {
+
+    public static String ARG_ITEM_ID;
+    private EditText searchET;
+    private ImageButton searchBTN;
+    private CalificacionAdapter adapter;
+    //Proveedor de datos:
+    private DataService data;
+    private Integer idUsuario;
+
+    public CalificacionesListFragment() {
+        super();
+        this.data = DataService.getInstance();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        this.idUsuario = getArguments().getInt(CalificacionesListFragment.ARG_ITEM_ID);
+    }
+
+    private void buscarCalificacionesDeUsuario(Integer idUsuario) {
+
+        MyApiEndpointInterface client = ServiceGenerator.createService(MyApiEndpointInterface.class);
+
+        Call<List<CalificacionMinificada>> call =
+                client.calificaciones(idUsuario.toString());
+
+        call.enqueue(new Callback<List<CalificacionMinificada>>() {
+            @Override
+            public void onResponse(Call<List<CalificacionMinificada>> call, Response<List<CalificacionMinificada>> response) {
+
+                mostrarCalificaciones(response.body());
+
+            }
+
+            @Override
+            public void onFailure(Call<List<CalificacionMinificada>> call, Throwable t) {
+                t.printStackTrace();
+                onFailed();
+            }
+        });
+    }
+
+    private void mostrarCalificaciones(List<CalificacionMinificada> calificaciones) {
+        this.adapter = new CalificacionAdapter(this.getActivity(), calificaciones);
+        this.setListAdapter(this.adapter);
+    }
+
+
+    public interface Callbacks {
+        void onItemSelected(CalificacionMinificada calificacion);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.calificaciones_list_fragment, null, false);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+
+        this.searchET = (EditText) this.getView().findViewById(R.id.busqueda_edittext);
+        this.searchET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            /**En caso de apretar el botón DONE del teclado dispara la busqueda.*/
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE && event == null) {
+                    buscar();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        this.searchBTN = (ImageButton) this.getView().findViewById(R.id.busqueda_boton);
+        this.searchBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buscar();
+            }
+        });
+    }
+
+    /** Se dispara la búsqueda buscando calificaciones cuyo nombre contenga el patrón de text extraido del
+     * campo de búsqueda de la vista.*/
+    public void buscar() {
+        String text = searchET.getText().toString();
+        adapter.getFilter().filter(text);
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //Actualiza la lista cada vez que el activity esta por estar visible.
+        //this.buscar();
+        //adapter.notifyDataSetChanged();
+        buscarCalificacionesDeUsuario(this.idUsuario);
+    }
+
+    private void onFailed() {
+        Toast.makeText(this.getActivity(), "Falló la conexión", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onListItemClick(ListView listView, View view, int position, long id) {
+        super.onListItemClick(listView, view, position, id);
+
+        CalificacionMinificada calificacion = (CalificacionMinificada) this.getListAdapter().getItem(position);
+        Callbacks callbacks = (Callbacks) this.getActivity();
+        callbacks.onItemSelected(calificacion);
+    }
+}

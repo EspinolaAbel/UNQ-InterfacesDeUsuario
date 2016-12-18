@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_calificacion_nueva"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ar.edu.unq.uis.rankit_android.CalificacionNuevaActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/crear_calificacion_toolbar"
+            style="@style/Toolbar">
+
+            <TextView
+                style="@style/ToolbarTitle"
+                android:text="@string/nueva_calificacion"
+                android:id="@+id/toolbar_title" />
+
+        </android.support.v7.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+
+            android:layout_margin="20dp">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/seleccionar_evaluado"
+                android:textSize="@dimen/label_edicion"/>
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/evaluados_spinner"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.AppCompatSpinner>
+
+            <include layout="@layout/campos_de_edicion"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/guardar_edicion_boton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_save"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"/>
+
+    <!-- android:backgroundTint="#8AE234" -->
+
+</android.support.design.widget.CoordinatorLayout>
