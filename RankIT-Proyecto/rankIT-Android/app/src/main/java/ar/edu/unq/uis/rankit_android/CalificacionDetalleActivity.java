@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import ar.edu.unq.uis.rankit_android.model.Calificacion;
-import ar.edu.unq.uis.rankit_android.model.clasesMinificadas.CalificacionMinificada;
 import ar.edu.unq.uis.rankit_android.repo.DataService;
 
 public class CalificacionDetalleActivity extends AppCompatActivity {
@@ -26,7 +25,7 @@ public class CalificacionDetalleActivity extends AppCompatActivity {
     private ImageButton editarIB;
     private ImageButton borrarIB;
 
-    private CalificacionMinificada calificacion;
+    private Integer idCalificacion;
     private Integer idUsuario;
 
     private DataService data;
@@ -63,7 +62,7 @@ public class CalificacionDetalleActivity extends AppCompatActivity {
         });
 
         this.tituloTV = (TextView) findViewById(R.id.toolbar_title);
-        this.calificacion = (CalificacionMinificada) this.getIntent().getExtras().getSerializable(ARG_ITEM_ID);
+        this.idCalificacion = (Integer) this.getIntent().getExtras().getInt(ARG_ITEM_ID);
         this.idUsuario = (Integer) this.getIntent().getExtras().getInt(LoginActivity.ID_USER);
     }
 
@@ -76,10 +75,10 @@ public class CalificacionDetalleActivity extends AppCompatActivity {
 
     /** Se toman las acciones necesarias para mostrar la calificación en el activity actual.*/
     private void mostrarCalificacion() {
-        //Calificacion c = this.data.getCalificacion(this.idCalificacion);
-        this.tituloTV.setText(calificacion.getEvaluado());
-        this.motivoTV.setText(calificacion.getDetalle());
-        this.puntajeTV.setText(calificacion.getPuntaje().toString());
+        Calificacion c = this.data.getCalificacion(this.idCalificacion);
+        this.tituloTV.setText(c.getEvaluado());
+        this.motivoTV.setText(c.getMotivo());
+        this.puntajeTV.setText(c.getPuntaje().toString());
     }
 
 /*
@@ -133,7 +132,7 @@ public class CalificacionDetalleActivity extends AppCompatActivity {
     /**Se navega al activity para editar la calificación actual. */
     public void irAEditarCalificacion(){
         Intent editarIntent = new Intent(this, CalificacionEditarActivity.class);
-        editarIntent.putExtra(CalificacionEditarActivity.ARG_ITEM_ID, this.calificacion);
+        editarIntent.putExtra(CalificacionEditarActivity.ARG_ITEM_ID, this.idCalificacion);
         editarIntent.putExtra(LoginActivity.ID_USER, this.idUsuario);
 
         this.startActivity(editarIntent);
@@ -142,7 +141,7 @@ public class CalificacionDetalleActivity extends AppCompatActivity {
     /**Borra la calificación actual y se cierra el activity actual para volver al activity de lista de
      * calificaciones*/
     public void borrarCalificacionYCerrarActivity() {
-        //this.data.borrarCalificacion(this.idCalificacion);
+        this.data.borrarCalificacion(this.idCalificacion);
         Toast.makeText(this,"La calificacíon a sido borrada",Toast.LENGTH_LONG).show();
         this.finish();
     }

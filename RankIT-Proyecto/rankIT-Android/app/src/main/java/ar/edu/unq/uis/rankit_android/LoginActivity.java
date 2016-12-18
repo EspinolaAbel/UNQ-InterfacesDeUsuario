@@ -7,17 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import ar.edu.unq.uis.rankit_android.model.clasesMinificadas.DatosUsuario;
-import ar.edu.unq.uis.rankit_android.model.clasesMinificadas.LogUsuario;
 import ar.edu.unq.uis.rankit_android.model.exceptions.UsuarioNoEncontradoException;
-import ar.edu.unq.uis.rankit_android.model.myApy.MyApiEndpointInterface;
-import ar.edu.unq.uis.rankit_android.model.myService.ServiceGenerator;
 import ar.edu.unq.uis.rankit_android.repo.DataService;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -47,64 +39,26 @@ public class LoginActivity extends AppCompatActivity {
         this.ingresarBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view){
-                ingresar(view);
+
+                String usuario = usuarioET.getText().toString();
+                String contrasenia = passwordET.getText().toString();
+
+                iniciarSesion(view, usuario, contrasenia);
             }
         });
     }
 
-    public void ingresar(View view) {
-        EditText usuarioText = (EditText) findViewById(R.id.usuario);
-        EditText passText = (EditText) findViewById(R.id.password);
-
-        DatosUsuario usuario = new DatosUsuario();
-        usuario.setUsuario(usuarioText.getText().toString());
-
-        EditText passwordText = (EditText) findViewById(R.id.password);
-        usuario.setPassword(passwordText.getText().toString());
-
+    private void iniciarSesion(View view, String usuario, String contrasenia) {
         try {
+            int id = this.data.login(usuario, contrasenia);
 
-            MyApiEndpointInterface client = ServiceGenerator.createService(MyApiEndpointInterface.class);
-
-
-            Call<LogUsuario> call =
-                    client.logInUsuario(usuario);
-
-            call.enqueue(new Callback<LogUsuario>() {
-                @Override
-                public void onResponse(Call<LogUsuario> call, Response<LogUsuario> response) {
-
-                    pantallaCalificacionDelUsuario(response.body());
-
-                }
-
-
-                @Override
-                public void onFailure(Call<LogUsuario> call, Throwable t) {
-                    onFailed();
-                    t.printStackTrace();
-                }
-            });
-
-
+            Intent intent = new Intent(this, CalificacionesListActivity.class);
+            intent.putExtra(ID_USER, id);
+            this.startActivity(intent);
         }
         catch(UsuarioNoEncontradoException e){
             Snackbar.make(view, "'usuario' o 'contraseña' ingresados incorrectamente", Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show();
         }
-
-
     }
-
-    private void onFailed() {
-        Toast.makeText(this, "Pobre usuario que no le funciona la app", Toast.LENGTH_LONG).show();
-    }
-
-    private void pantallaCalificacionDelUsuario(LogUsuario usuarioLogueado) {
-        Intent intent = new Intent(this, CalificacionesListActivity.class);
-        intent.putExtra(ID_USER, usuarioLogueado.getId());
-        startActivity(intent);
-    }
-
-
 }

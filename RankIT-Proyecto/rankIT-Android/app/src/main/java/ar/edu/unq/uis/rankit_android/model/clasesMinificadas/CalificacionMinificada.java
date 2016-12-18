@@ -1,12 +1,10 @@
 package ar.edu.unq.uis.rankit_android.model.clasesMinificadas;
 
-import java.io.Serializable;
-
 /**
  * Created by nicolas on 16/11/16.
  */
 
-public class CalificacionMinificada implements Serializable {
+public class CalificacionMinificada {
     private Integer puntaje;
     private String detalle;
     private String evaluado;
